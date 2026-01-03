@@ -4,6 +4,7 @@ import SalarySlip from '../models/SalarySlip.js';
 import Notification from '../models/Notification.js';
 import User from '../models/User.js';
 import { authenticate, authorize } from '../middleware/auth.js';
+import { sendUpdateNotification } from '../utils/emailService.js';
 
 const router = express.Router();
 
@@ -118,6 +119,17 @@ router.put('/:id', authenticate, authorize('admin'), [
       title: 'Salary Slip Updated',
       message: `Your salary slip for ${updated.month} has been updated.`,
       link: `/salary-slips/${updated._id}`
+    });
+
+    // Send email notification about update
+    const updateDetails = `Salary slip for ${updated.employeeId.name} (${updated.employeeId.email}) for month ${updated.month} has been updated.`;
+    sendUpdateNotification(
+      'Salary Slip Update',
+      req.user.name,
+      req.user.email,
+      updateDetails
+    ).catch(err => {
+      console.error('Failed to send update email:', err);
     });
 
     res.json({

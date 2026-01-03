@@ -4,6 +4,7 @@ import Expense from '../models/Expense.js';
 import Notification from '../models/Notification.js';
 import User from '../models/User.js';
 import { authenticate, authorize } from '../middleware/auth.js';
+import { sendUpdateNotification } from '../utils/emailService.js';
 
 const router = express.Router();
 
@@ -102,6 +103,17 @@ router.put('/:id/approve', authenticate, authorize('admin'), async (req, res) =>
       .populate('employeeId', 'name email')
       .populate('reviewedBy', 'name');
 
+    // Send email notification about update
+    const updateDetails = `Expense of $${expense.amount} for ${expense.month} submitted by ${populated.employeeId.name} (${populated.employeeId.email}) has been approved.`;
+    sendUpdateNotification(
+      'Expense Approval',
+      req.user.name,
+      req.user.email,
+      updateDetails
+    ).catch(err => {
+      console.error('Failed to send update email:', err);
+    });
+
     res.json({
       message: 'Expense approved successfully',
       expense: populated
@@ -147,6 +159,17 @@ router.put('/:id/reject', authenticate, authorize('admin'), [
     const populated = await Expense.findById(expense._id)
       .populate('employeeId', 'name email')
       .populate('reviewedBy', 'name');
+
+    // Send email notification about update
+    const updateDetails = `Expense of $${expense.amount} for ${expense.month} submitted by ${populated.employeeId.name} (${populated.employeeId.email}) has been rejected. Reason: ${expense.rejectionReason}`;
+    sendUpdateNotification(
+      'Expense Rejection',
+      req.user.name,
+      req.user.email,
+      updateDetails
+    ).catch(err => {
+      console.error('Failed to send update email:', err);
+    });
 
     res.json({
       message: 'Expense rejected successfully',

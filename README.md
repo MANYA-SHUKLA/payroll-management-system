@@ -27,6 +27,12 @@ A full-stack payroll management system built with Next.js, Node.js, Express, and
 - Real-time notifications
 - Responsive design
 
+### Email Notifications
+- Email notifications sent to admin on user login (admin and employee)
+- Email notifications sent to admin on new user registration
+- Email notifications sent to admin on salary slip updates
+- Email notifications sent to admin on expense approvals/rejections
+
 ## 🛠️ Tech Stack
 
 ### Frontend
@@ -123,7 +129,17 @@ MONGODB_URI=mongodb://localhost:27017/payroll_db
 JWT_SECRET=your-super-secret-jwt-key-change-in-production
 JWT_EXPIRE=7d
 NODE_ENV=development
+
+# Email Configuration (for notifications)
+EMAIL_USER=your-email@gmail.com
+EMAIL_PASS=your-app-password
 ```
+
+**Note**: For Gmail, you need to generate an App Password:
+1. Go to your Google Account settings
+2. Enable 2-Step Verification
+3. Generate an App Password for "Mail"
+4. Use that App Password as `EMAIL_PASS`
 
 #### Client Configuration
 
@@ -251,6 +267,45 @@ payroll-management-system/
 
 ## 🚀 Production Deployment
 
+### Deploying to Render
+
+This project includes a `render.yaml` configuration file for easy deployment on Render.com.
+
+#### Option 1: Using render.yaml (Recommended)
+
+1. Push your code to GitHub
+2. In Render dashboard, click "New" → "Blueprint"
+3. Connect your GitHub repository
+4. Render will automatically detect `render.yaml` and create two services:
+   - **Frontend Service** (Next.js)
+   - **Backend Service** (Express)
+
+#### Option 2: Manual Setup
+
+**Frontend Service:**
+- **Type**: Web Service
+- **Root Directory**: `client`
+- **Build Command**: `npm install && npm run build`
+- **Start Command**: `npm start`
+- **Environment Variables**:
+  - `NODE_ENV=production`
+  - `NEXT_PUBLIC_API_URL=https://your-backend-service.onrender.com/api`
+
+**Backend Service:**
+- **Type**: Web Service
+- **Root Directory**: `server`
+- **Build Command**: `npm install`
+- **Start Command**: `npm start`
+- **Environment Variables**:
+  - `NODE_ENV=production`
+  - `PORT=10000` (Render sets this automatically, but you can override)
+  - `MONGODB_URI=your-mongodb-atlas-connection-string`
+  - `JWT_SECRET=your-strong-secret-key`
+  - `JWT_EXPIRE=7d`
+  - `EMAIL_USER=your-email@gmail.com`
+  - `EMAIL_PASS=your-gmail-app-password`
+  - `ALLOWED_ORIGINS=https://your-frontend-service.onrender.com,http://localhost:3000`
+
 ### Environment Variables
 
 Make sure to set proper environment variables in production:
@@ -258,18 +313,19 @@ Make sure to set proper environment variables in production:
 - Use a strong `JWT_SECRET`
 - Set `NODE_ENV=production`
 - Use a production MongoDB URI (MongoDB Atlas recommended)
-- Configure proper CORS settings
+- Configure `ALLOWED_ORIGINS` with your frontend URL(s) for CORS
+- Set `EMAIL_USER` and `EMAIL_PASS` for email notifications (Gmail App Password recommended)
 
 ### Build Commands
 
 ```bash
 # Build frontend
 cd client
-npm run build
+npm install && npm run build
 
 # Start production server
 cd server
-npm start
+npm install && npm start
 ```
 
 ## 📊 Database Schema

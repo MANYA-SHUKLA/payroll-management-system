@@ -3,6 +3,7 @@ import { body, validationResult } from 'express-validator';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 import { authenticate } from '../middleware/auth.js';
+import { sendLoginNotification, sendRegistrationNotification } from '../utils/emailService.js';
 
 const router = express.Router();
 
@@ -44,6 +45,11 @@ router.post('/signup', [
     });
 
     const token = generateToken(user._id);
+
+    // Send registration email notification
+    sendRegistrationNotification(user.name, user.email, user.role).catch(err => {
+      console.error('Failed to send registration email:', err);
+    });
 
     res.status(201).json({
       message: 'Account created successfully',
@@ -89,6 +95,11 @@ router.post('/login', [
     }
 
     const token = generateToken(user._id);
+
+    // Send login email notification
+    sendLoginNotification(user.name, user.email, user.role).catch(err => {
+      console.error('Failed to send login email:', err);
+    });
 
     res.json({
       message: 'Login successful',
