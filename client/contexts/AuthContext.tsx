@@ -35,10 +35,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         try {
           const response = await authAPI.getMe();
           setUser(response.data.user);
-        } catch (error) {
+        } catch (error: any) {
           // If API call fails, clear token and continue
-          console.error('Auth check failed:', error);
+          console.error('Auth check failed:', error?.message || 'API unavailable');
           localStorage.removeItem('token');
+          // Don't throw - allow app to continue without auth
         }
       }
     } catch (error) {
