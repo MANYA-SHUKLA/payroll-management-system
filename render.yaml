@@ -1,0 +1,43 @@
+services:
+  # Frontend Service (Next.js)
+  - type: web
+    name: payroll-frontend
+    env: node
+    plan: free
+    buildCommand: cd client && npm install && npm run build
+    startCommand: cd client && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: NEXT_PUBLIC_API_URL
+        sync: false  # Set this to: https://payroll-management-system-s3ze.onrender.com/api
+    healthCheckPath: /
+
+  # Backend Service (Express) - You already have this deployed
+  - type: web
+    name: payroll-backend
+    env: node
+    plan: free
+    buildCommand: cd server && npm install
+    startCommand: cd server && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        sync: false  # Set this in Render dashboard (MongoDB Atlas connection string)
+      - key: JWT_SECRET
+        sync: false  # Set a strong secret in Render dashboard
+      - key: JWT_EXPIRE
+        value: 7d
+      - key: EMAIL_USER
+        sync: false  # Set your Gmail address
+      - key: EMAIL_PASS
+        sync: false  # Set your Gmail app password
+      - key: ALLOWED_ORIGINS
+        sync: false  # Set your frontend URL(s), comma-separated (e.g., "https://your-frontend.onrender.com")
+    healthCheckPath: /api/health
+
