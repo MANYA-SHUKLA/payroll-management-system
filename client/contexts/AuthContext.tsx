@@ -32,10 +32,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const token = localStorage.getItem('token');
       if (token) {
-        const response = await authAPI.getMe();
-        setUser(response.data.user);
+        try {
+          const response = await authAPI.getMe();
+          setUser(response.data.user);
+        } catch (error) {
+          // If API call fails, clear token and continue
+          console.error('Auth check failed:', error);
+          localStorage.removeItem('token');
+        }
       }
     } catch (error) {
+      console.error('Auth check error:', error);
       localStorage.removeItem('token');
     } finally {
       setLoading(false);
