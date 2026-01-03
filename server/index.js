@@ -59,6 +59,22 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Server is running' });
 });
 
+// Root route - API information
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Payroll Management System API',
+    version: '1.0.0',
+    endpoints: {
+      health: '/api/health',
+      auth: '/api/auth',
+      salarySlips: '/api/salary-slip',
+      expenses: '/api/expense',
+      notifications: '/api/notification'
+    },
+    documentation: 'This is the backend API. Please use the frontend application to access the system.'
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
