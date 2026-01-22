@@ -1,5 +1,4 @@
 'use client';
-
 import { useEffect, useState } from 'react';
 import Layout from '@/components/Layout';
 import { salarySlipAPI, expenseAPI } from '@/lib/api';
@@ -19,8 +18,6 @@ export default function AdminPage() {
   const [showRejectionPopup, setShowRejectionPopup] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showSalarySuccessPopup, setShowSalarySuccessPopup] = useState(false);
-
-  // Salary form state
   const [salaryForm, setSalaryForm] = useState({
     employeeEmail: '',
     month: '',
