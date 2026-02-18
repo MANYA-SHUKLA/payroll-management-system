@@ -4,7 +4,6 @@ import Layout from '@/components/Layout';
 import { salarySlipAPI, expenseAPI } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
-
 export default function AdminPage() {
   const { user } = useAuth();
   const router = useRouter();
@@ -25,7 +24,6 @@ export default function AdminPage() {
     allowances: '',
     deductions: '',
   });
-
   useEffect(() => {
     if (user && user.role !== 'admin') {
       router.push('/dashboard');
@@ -36,11 +34,8 @@ export default function AdminPage() {
 
   const fetchData = async () => {
     try {
-      // Fetch employees (in a real app, you'd have an employees endpoint)
       const expensesRes = await expenseAPI.getAll();
       setExpenses(expensesRes.data.expenses.filter((e: any) => e.status === 'pending'));
-      
-      // Extract unique employees from expenses
       const employeeMap = new Map();
       expensesRes.data.expenses.forEach((expense: any) => {
         if (expense.employeeId && !employeeMap.has(expense.employeeId._id)) {
@@ -54,7 +49,6 @@ export default function AdminPage() {
       setLoading(false);
     }
   };
-
   const handleCreateSalarySlip = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
