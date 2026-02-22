@@ -1,8 +1,6 @@
 'use client';
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { authAPI } from '@/lib/api';
-
 interface User {
   id: string;
   name: string;
