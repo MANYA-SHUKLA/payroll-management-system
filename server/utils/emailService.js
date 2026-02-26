@@ -1,6 +1,4 @@
 import nodemailer from 'nodemailer';
-
-// Create reusable transporter object using SMTP transport
 const createTransporter = () => {
   return nodemailer.createTransport({
     service: 'gmail',
@@ -10,8 +8,6 @@ const createTransporter = () => {
     }
   });
 };
-
-// Send email notification
 export const sendEmailNotification = async (subject, message, htmlContent = null) => {
   try {
     const transporter = createTransporter();
@@ -24,7 +20,6 @@ export const sendEmailNotification = async (subject, message, htmlContent = null
       text: message,
       html: htmlContent || message
     };
-
     const info = await transporter.sendMail(mailOptions);
     console.log('Email sent successfully:', info.messageId);
     return { success: true, messageId: info.messageId };
