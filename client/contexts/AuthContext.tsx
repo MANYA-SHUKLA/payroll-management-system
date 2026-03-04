@@ -7,7 +7,6 @@ interface User {
   email: string;
   role: 'admin' | 'employee';
 }
-
 interface AuthContextType {
   user: User | null;
   loading: boolean;
@@ -15,17 +14,13 @@ interface AuthContextType {
   signup: (name: string, email: string, password: string, role?: string) => Promise<void>;
   logout: () => void;
 }
-
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     checkAuth();
   }, []);
-
   const checkAuth = async () => {
     try {
       const token = localStorage.getItem('token');
