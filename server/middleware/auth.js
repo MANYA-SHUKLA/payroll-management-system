@@ -21,7 +21,6 @@ export const authenticate = async (req, res, next) => {
     res.status(401).json({ message: 'Invalid token' });
   }
 };
-
 export const authorize = (...roles) => {
   return (req, res, next) => {
     if (!req.user) {
